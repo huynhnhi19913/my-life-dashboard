@@ -629,7 +629,8 @@ select{font:inherit;color:inherit;background:var(--white);border:2px solid trans
   }
   function cloudPush(){
     if(!FB || !fbDoc || !cloudOk) return Promise.resolve(false);
-    return fbDoc.set({data: JSON.stringify(S), updated: S.updated || Date.now()}).then(function(){ setStatus('Đã lưu và đồng bộ'); return true; }, function(){ setStatus('Chưa đồng bộ được, đã giữ trên máy này'); return false; });
+    if(!S.updated){ S.updated = Date.now(); lsSet(LS, S); }
+    return fbDoc.set({data: JSON.stringify(S), updated: S.updated}).then(function(){ setStatus('Đã lưu và đồng bộ'); return true; }, function(){ setStatus('Chưa đồng bộ được, đã giữ trên máy này'); return false; });
   }
   function publish(){
     if(!FB){ setStatus('Đã lưu trên máy này (chưa kết nối được máy chủ)'); return; }
@@ -664,6 +665,15 @@ select{font:inherit;color:inherit;background:var(--white);border:2px solid trans
     document.getElementById('gUp').addEventListener('click', function(){ if(!em() || pw().length < 6){ msg('Nhập email và mật khẩu (ít nhất 6 ký tự) rồi bấm Tạo tài khoản.'); return; } msg('Đang tạo tài khoản…', true); FB.auth.createUserWithEmailAndPassword(em(), pw()).catch(function(err){ msg(authErr(err)); }); });
     document.getElementById('gReset').addEventListener('click', function(){ if(!em()){ msg('Nhập email trước rồi bấm Quên mật khẩu.'); return; } FB.auth.sendPasswordResetEmail(em()).then(function(){ msg('Đã gửi email đặt lại mật khẩu. Kiểm tra hộp thư (cả mục Spam) nhé.', true); }, function(err){ msg(authErr(err)); }); });
   }
+  function adopt(r){ var o = JSON.parse(r.data); o.updated = r.updated || o.updated || Date.now(); return o; }
+  function safeReload(){
+    // chặn tải lại liên tục: tối đa 3 lần trong 20 giây
+    var k = 'nangcap-rl', now = Date.now(), a = [];
+    try{ a = JSON.parse(sessionStorage.getItem(k) || '[]').filter(function(t){ return now - t < 20000; }); }catch(e){}
+    if(a.length >= 3) return false;
+    a.push(now); try{ sessionStorage.setItem(k, JSON.stringify(a)); }catch(e){}
+    return true;
+  }
   function startCloud(){
     if(!FB) return;
     loginBox(true);
@@ -675,13 +685,14 @@ select{font:inherit;color:inherit;background:var(--white);border:2px solid trans
       setStatus('Đang đồng bộ…');
       fbDoc.get().then(function(snap){
         var r = snap.exists ? snap.data() : null, same = lsGet(LUID) === u.uid;
-        if(r && r.data && (!same || (r.updated || 0) > (S.updated || 0))){ lsSet(LS, JSON.parse(r.data)); lsSet(LUID, u.uid); location.reload(); return; }
+        if(r && r.data && (!same || (r.updated || 0) > (S.updated || 0)) && safeReload()){ lsSet(LS, adopt(r)); lsSet(LUID, u.uid); location.reload(); return; }
         lsSet(LUID, u.uid); cloudOk = true;
         if(!r || (S.updated || 0) > (r.updated || 0)) cloudPush(); else setStatus('Đã đồng bộ');
         fbDoc.onSnapshot(function(sn){
           var d = sn.data(); if(!d || sn.metadata.hasPendingWrites || !d.data) return;
           if((d.updated || 0) > (S.updated || 0)){
-            lsSet(LS, JSON.parse(d.data));
+            if(!safeReload()) return;
+            lsSet(LS, adopt(d));
             var ae = document.activeElement;
             if(ae && /INPUT|TEXTAREA|SELECT/.test(ae.tagName)) setStatus('Có dữ liệu mới từ thiết bị khác, tải lại trang để xem.');
             else location.reload();
