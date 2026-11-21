@@ -394,7 +394,7 @@ button.bk{border:0;font:inherit;cursor:pointer;color:inherit}button.bk.on{outlin
 .clock.fbig{font-size:4.4rem}
 .pal{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);grid-template-areas:'bub tim' 'cat tim';align-items:center;gap:6px 14px;flex:1 1 360px}.pal .palbtn{grid-area:cat;justify-self:center;align-self:start}.pal .palbtn svg{width:100px;height:100px}.pal .bubble{grid-area:bub;align-self:end;justify-self:center;text-align:center;margin:0;font-size:.82rem;padding:7px 10px}.pal .bubble::after{content:'';position:absolute;left:50%;bottom:-8px;width:12px;height:12px;background:inherit;border-right:2px solid var(--line);border-bottom:2px solid var(--line);transform:translateX(-50%) rotate(45deg);border-radius:0 0 3px 0}.pal .htimer svg{width:18px;height:18px}
 .htimer{grid-area:tim;position:relative;gap:6px;background:var(--lilac);border-radius:18px;padding:30px 12px 14px;align-content:center;align-self:stretch}.htimer .htcoin{position:absolute;top:8px;right:8px;font-size:.8rem;padding:2px 8px}.cd b.tday{font-size:1.2rem;line-height:1.6rem}.cds.cdrow .cd b.tday{font-size:1rem;line-height:1.35rem}
-.hstats{margin-top:14px}.clstools{margin-left:auto;display:flex;gap:8px;align-items:center}.clsform{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.clsform label{display:grid;gap:4px;font-weight:800;font-size:.82rem;color:var(--muted)}.clsform .wide{grid-column:1 / -1}.clsform input,.clsform select{font:inherit;padding:9px 10px;border-radius:12px;border:2px solid var(--line);background:var(--white);color:var(--ink);min-width:0}.snav{display:flex;align-items:center;justify-content:center;gap:8px;margin:2px 0 4px}.snav .slbl{font-weight:800;font-size:.85rem;color:var(--muted);min-width:120px;text-align:center}.snav .navbtn{width:30px;height:30px;font-size:1rem}.snav .navbtn:disabled{opacity:.35;cursor:default}
+.hstats{margin-top:14px;grid-template-columns:repeat(6,1fr)}@media (max-width:900px){.hstats{grid-template-columns:repeat(3,1fr)}}@media (max-width:640px){.hstats{grid-template-columns:repeat(2,1fr)}}.todosec .head{display:flex;align-items:center;gap:8px}.todosec .tdsum{margin-left:auto;font-weight:800;font-size:.85rem;color:var(--peach-d)}.todo .star{flex:none;width:30px;height:30px;border:0;background:transparent;cursor:pointer;font-size:1.25rem;line-height:1;color:var(--muted);padding:0}.todo .star.on{color:#E8A800}.todo.starred{box-shadow:inset 3px 0 0 #F2C230}.todo.done .name{color:var(--muted);text-decoration:line-through}.todo .bar{background:var(--white)}.todosec .add .tdN{max-width:84px}.day .dots i.t{background:var(--peach-d)}.clstools{margin-left:auto;display:flex;gap:8px;align-items:center}.clsform{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.clsform label{display:grid;gap:4px;font-weight:800;font-size:.82rem;color:var(--muted)}.clsform .wide{grid-column:1 / -1}.clsform input,.clsform select{font:inherit;padding:9px 10px;border-radius:12px;border:2px solid var(--line);background:var(--white);color:var(--ink);min-width:0}.snav{display:flex;align-items:center;justify-content:center;gap:8px;margin:2px 0 4px}.snav .slbl{font-weight:800;font-size:.85rem;color:var(--muted);min-width:120px;text-align:center}.snav .navbtn{width:30px;height:30px;font-size:1rem}.snav .navbtn:disabled{opacity:.35;cursor:default}
 .trio{align-items:stretch!important}.trio>.card{align-self:stretch!important;height:auto!important;box-sizing:border-box}.trio .cups{margin:0 auto;width:100%}.trio .row,.trio .row.left,.trio .add,.trio .chips{justify-content:center}.trio details summary{text-align:center}.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}@media (max-width:900px){.trio{grid-template-columns:1fr}}
 .hgear{display:flex;align-items:center;gap:8px}.gear{border:0;background:var(--white);color:var(--cd);width:32px;height:32px;border-radius:50%;display:inline-grid;place-items:center;cursor:pointer;flex:none}.gear.on{background:var(--cd);color:var(--white)}.setbox{display:grid;gap:8px}
 .wkf{margin-top:10px}.wnum.f{color:var(--lilac-d)}
@@ -574,6 +574,7 @@ select{font:inherit;color:inherit;background:var(--white);border:2px solid trans
   if(S.budget == null) S.budget = 3000000;
   S.settings = Object.assign({skin:'keo', pal:'meo', night:'auto'}, S.settings || {});
   S.countdowns = S.countdowns || [];
+  S.todos = S.todos || {};
   if(!S.classes) S.classes = [
     {id:'c1', day:1, room:'B2-307', name:'Phát triển bền vững', lhp:'26C3ECO50122006', start:'17:45', end:'21:10', gv:'TS. Nguyễn Tấn Khuyên', mode:'Tập trung', from:'2026-11-02', to:'2026-12-28'},
     {id:'c2', day:5, room:'B2-212', name:'Tài chính doanh nghiệp nâng cao', lhp:'', start:'17:45', end:'21:10', gv:'Hoàng Thị Phương Anh', mode:'Tập trung', from:'2026-11-06', to:'2026-12-25'},
@@ -599,7 +600,7 @@ select{font:inherit;color:inherit;background:var(--white);border:2px solid trans
   }
 
   var app = $('#app');
-  var editH = false, editG = false, toastMsg = '', statusMsg = '', nudge = false, txType = 'out', txCat = 'Ăn uống';
+  var editH = false, editG = false, editT = false, toastMsg = '', statusMsg = '', nudge = false, txType = 'out', txCat = 'Ăn uống';
   var dr = lsGet(LD);
   var draft = (dr && dr.d === today()) ? dr.v : Object.assign({}, S.journal[today()] || {});
   var timerMem = null;
@@ -827,6 +828,7 @@ select{font:inherit;color:inherit;background:var(--white);border:2px solid trans
       + '<div class="stat lilac"><b>' + hrs(fT.m) + ' giờ</b><span>tập trung</span></div>'
       + '<div class="stat peach"><b>' + (moodT ? moodT.name : '—') + '</b><span>tâm trạng</span></div>'
       + '<div class="stat pink"><b>' + money(spentT) + '</b><span>đã chi hôm nay</span></div>'
+      + (function(){ var ts = todoStat(today()); return '<div class="stat mint"><b>' + (ts.n ? ts.d + '/' + ts.n : '—') + '</b><span>việc xong</span></div>'; })()
       + '</div>'
       + '<div class="head"><p class="status" id="status">' + esc(statusMsg) + '</p><button class="link" data-act="look" aria-expanded="' + lookOpen + '">' + (lookOpen ? 'Đóng' : 'Đổi giao diện') + '</button></div>';
     if(lookOpen){
@@ -868,6 +870,7 @@ select{font:inherit;color:inherit;background:var(--white);border:2px solid trans
 
     var cds = upcomingCds(), tdc = classesToday();
     var h = (tdc.length ? '<section class="card pink span2"><div class="head"><h2>Lớp hôm nay</h2><a class="link" href="#lich-hoc" style="text-decoration:none">Xem lịch học</a></div><div class="cgrid">' + tdc.map(function(c){ return classCard(c, {today: true}); }).join('') + '</div></section>' : '');
+    h += '<section class="card peach span2 todosec">' + vTodoList(t, 'addTodo') + '</section>';
     h += '<section class="card lilac span2 cdsec"><div class="head"><h2>Đếm ngược</h2><span class="cdnavs"><button class="navbtn prev" data-act="cdNav" data-v="-1" aria-label="Xem mục trước">‹</button><button class="navbtn next" data-act="cdNav" data-v="1" aria-label="Xem mục sau">›</button></span><a class="link" href="#lich" style="text-decoration:none">Thêm ngày</a></div>'
       + (cds.length ? cdTiles(cds).replace('<div class="cds">', '<div class="cds cdrow">') : '<p class="muted">Chưa có ngày thi hay hạn nộp bài nào. Thêm ở mục Lịch nhé.</p>') + '</section>';
 
@@ -989,6 +992,36 @@ select{font:inherit;color:inherit;background:var(--white);border:2px solid trans
     return h + '</section>';
   }
 
+  /* ---------- Việc cần làm ---------- */
+  function todosOf(k){ S.todos = S.todos || {}; return S.todos[k] || []; }
+  function todoStat(k){ var a = todosOf(k); return {n: a.length, d: a.filter(function(x){ return x.done >= x.total; }).length}; }
+  function vTodoList(k, formId){
+    var a = todosOf(k).slice(), st = todoStat(k);
+    a.sort(function(x, y){
+      var dx = x.done >= x.total ? 1 : 0, dy = y.done >= y.total ? 1 : 0;
+      if(dx !== dy) return dx - dy;
+      return (y.star ? 1 : 0) - (x.star ? 1 : 0);
+    });
+    var h = '<div class="head"><h2>' + (formId === 'addTodo' ? 'Việc cần làm hôm nay' : 'Việc cần làm') + '</h2>'
+      + '<span class="tdsum">' + (st.n ? st.d + '/' + st.n + ' xong' : '') + '</span>'
+      + '<button class="link" data-act="editT">' + (editT ? 'Xong' : 'Sửa') + '</button></div><div class="list">';
+    if(!a.length) h += '<p class="muted">' + (formId === 'addTodo' ? 'Hôm nay chưa có việc nào. Thêm việc đầu tiên bên dưới nhé.' : 'Chưa có việc cần làm cho ngày này.') + '</p>';
+    a.forEach(function(x){
+      var p = x.total ? Math.min(1, x.done / x.total) : 0, ok = x.done >= x.total;
+      h += '<div class="goal todo' + (ok ? ' done' : '') + (x.star ? ' starred' : '') + '"><div class="top">'
+        + '<button class="star' + (x.star ? ' on' : '') + '" data-act="tStar" data-d="' + k + '" data-t="' + x.id + '" aria-pressed="' + !!x.star + '" aria-label="Ưu tiên ' + esc(x.name) + '">' + (x.star ? '★' : '☆') + '</button>'
+        + '<span class="name">' + esc(x.name) + '</span>'
+        + '<span class="cnt">' + x.done + '/' + x.total + (ok ? ' · Xong' : '') + '</span>'
+        + '<button class="step" data-act="tMinus" data-d="' + k + '" data-t="' + x.id + '" aria-label="Giảm">−</button>'
+        + '<button class="step" data-act="tPlus" data-d="' + k + '" data-t="' + x.id + '" aria-label="Tăng">+</button>'
+        + (editT ? '<button class="del" data-act="delT" data-d="' + k + '" data-t="' + x.id + '" aria-label="Xoá ' + esc(x.name) + '">×</button>' : '')
+        + '</div><div class="bar"><i style="width:' + Math.round(p * 100) + '%"></i></div></div>';
+    });
+    h += '</div><form class="add" id="' + formId + '"><input type="text" class="tdName" placeholder="Ví dụ: Làm bài tập KTQT" maxlength="80" aria-label="Tên việc">'
+      + '<input type="number" class="tdN" min="1" max="999" value="1" inputmode="numeric" aria-label="Số lượng cần làm"><button class="btn primary" type="submit">Thêm</button></form>';
+    return h;
+  }
+
   /* ---------- Lịch ---------- */
   function vCal(){
     var t = today();
@@ -1001,10 +1034,10 @@ select{font:inherit;color:inherit;background:var(--white);border:2px solid trans
       var k = calY + '-' + pad(calM+1) + '-' + pad(d);
       var ev = (S.events[k] || []).length, all = S.habits.length && habitsDone(k) === S.habits.length;
       h += '<button class="day' + (k === t ? ' today' : '') + (k === selDay ? ' sel' : '') + '" data-act="selDay" data-d="' + k + '" aria-label="Ngày ' + d + (ev ? ', ' + ev + ' việc' : '') + '">'
-        + '<span>' + d + '</span><span class="dots">' + (ev ? '<i></i>' : '') + (S.countdowns.some(function(c){ return c.date === k; }) ? '<i class="c"></i>' : '') + (all ? '<i class="h"></i>' : '') + '</span></button>';
+        + '<span>' + d + '</span><span class="dots">' + (ev ? '<i></i>' : '') + (todosOf(k).length ? '<i class="t"></i>' : '') + (S.countdowns.some(function(c){ return c.date === k; }) ? '<i class="c"></i>' : '') + (all ? '<i class="h"></i>' : '') + '</span></button>';
     }
     h += '</div><div class="row left"><button class="btn small" data-act="calToday">Về hôm nay</button></div>'
-      + '<div class="legend"><span><i style="background:var(--pink-d)"></i>Có lịch hẹn, công việc</span><span><i style="background:var(--lilac-d)"></i>Ngày thi, hạn nộp</span><span><i style="background:var(--mint-d)"></i>Làm đủ thói quen</span></div></section>';
+      + '<div class="legend"><span><i style="background:var(--pink-d)"></i>Có lịch hẹn, công việc</span><span><i style="background:var(--lilac-d)"></i>Ngày thi, hạn nộp</span><span><i style="background:var(--mint-d)"></i>Làm đủ thói quen</span><span><i style="background:var(--peach-d)"></i>Có việc cần làm</span></div></section>';
 
     // Ngày đã chọn
     var sd = new Date(selDay + 'T00:00:00');
@@ -1022,6 +1055,7 @@ select{font:inherit;color:inherit;background:var(--white);border:2px solid trans
       h += '<div class="ev"><span class="tm">' + esc(e.time || 'Cả ngày') + '</span><span class="name">' + esc(e.title) + '</span><button class="del" data-act="delEv" data-d="' + selDay + '" data-e="' + e.id + '" aria-label="Xoá ' + esc(e.title) + '">×</button></div>';
     });
     h += '</div><form class="add" id="addEv"><input type="time" id="evTime" aria-label="Giờ (không bắt buộc)"><input type="text" id="evTitle" placeholder="Ví dụ: Thi giữa kỳ, nộp tiểu luận" maxlength="100" aria-label="Tên việc"><button class="btn primary" type="submit">Thêm</button></form></section>';
+    h += '<section class="card peach todosec">' + vTodoList(selDay, 'addTodoDay') + '</section>';
 
     // Sắp tới
     var up = [];
@@ -2161,6 +2195,21 @@ select{font:inherit;color:inherit;background:var(--white);border:2px solid trans
     else if(a === 'cell') toggle(b.dataset.h, b.dataset.d);
     else if(a === 'editH'){ editH = !editH; render(); }
     else if(a === 'editG'){ editG = !editG; render(); }
+    else if(a === 'editT'){ editT = !editT; render(); }
+    else if(a === 'delT' || a === 'tStar' || a === 'tPlus' || a === 'tMinus'){
+      var tk = b.dataset.d, ta = todosOf(tk), ti = ta.filter(function(x){ return x.id === b.dataset.t; })[0];
+      if(ti){
+        if(a === 'delT') ta = ta.filter(function(x){ return x !== ti; });
+        else if(a === 'tStar') ti.star = !ti.star;
+        else {
+          var was = ti.done >= ti.total;
+          ti.done = Math.max(0, Math.min(ti.total, ti.done + (a === 'tPlus' ? 1 : -1)));
+          if(!was && ti.done >= ti.total) try{ fxBurst(rc, FX.drop, 6); }catch(err){}
+        }
+        if(ta.length) S.todos[tk] = ta; else delete S.todos[tk];
+        save(); render();
+      }
+    }
     else if(a === 'delH'){ S.habits = S.habits.filter(function(x){ return x.id !== b.dataset.h; }); save(); render(); }
     else if(a === 'delG'){ S.goals = S.goals.filter(function(x){ return x.id !== b.dataset.g; }); save(); render(); }
     else if(a === 'gplus' || a === 'gminus'){
@@ -2231,6 +2280,13 @@ select{font:inherit;color:inherit;background:var(--white);border:2px solid trans
     if(id === 'addHabit'){
       v = $('#newHabit').value.trim(); if(!v) return;
       S.habits.push({id: uid('h'), name: v}); save(); render();
+    } else if(id === 'addTodo' || id === 'addTodoDay'){
+      v = f.querySelector('.tdName').value.trim(); if(!v) return;
+      var tn = Math.max(1, Math.min(999, parseInt(f.querySelector('.tdN').value, 10) || 1));
+      var tk2 = id === 'addTodo' ? today() : selDay;
+      S.todos = S.todos || {};
+      (S.todos[tk2] = S.todos[tk2] || []).push({id: uid('t'), name: v, done: 0, total: tn, star: false});
+      save(); render();
     } else if(id === 'addGoal'){
       v = $('#newGoal').value.trim(); var k = Math.max(1, Math.min(999, parseInt($('#newGoalN').value, 10) || 1));
       if(!v) return;
